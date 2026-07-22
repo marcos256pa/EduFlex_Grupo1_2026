@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+ 
+{% block title %}Reportes{% endblock %}
+ 
+{% block content %}
+ 
+<h2 class="mb-4">Reportes</h2>
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="text-muted">Mis cursos</h6>
+                <h2>{{ summary.courses }}</h2>
+            </div>
+        </div>
+    </div>
+ 
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="text-muted">Estudiantes</h6>
+                <h2>{{ summary.students }}</h2>
+            </div>
+        </div>
+    </div>
+ 
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="text-muted">Ocupación promedio</h6>
+                <h2>{{ summary.occupancy }}%</h2>
+            </div>
+        </div>
+    </div>
+ 
+</div>
+ 
+<div class="card shadow-sm">
+    <div class="card-header">
+        Estado de mis cursos
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Curso</th>
+                        <th>Capacidad</th>
+                        <th>Matriculados</th>
+                        <th>Ocupación</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for report in reports %}
+                    <tr>
+                        <td>{{ report.title }}</td>
+                        <td>{{ report.capacity }}</td>
+                        <td>{{ report.enrolled }}</td>
+                        <td>{{ report.occupancy }}%</td>
+                        <td>
+                            {% if report.status == "Completo" %}
+                            <span class="badge bg-danger">
+                                {{ report.status }}
+                            </span>
+                            {% elif report.status == "Casi lleno" %}
+                            <span class="badge bg-warning text-dark">
+                                {{ report.status }}
+                            </span>
+                            {% else %}
+                            <span class="badge bg-success">
+                                {{ report.status }}
+                            </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">
+                            No existen cursos para mostrar.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+ 
+{% endblock %}

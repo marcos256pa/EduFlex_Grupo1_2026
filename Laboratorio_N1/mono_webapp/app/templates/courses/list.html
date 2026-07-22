@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Cursos{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Cursos disponibles</h2>
+    {% if current_user.role in ("instructor", "admin") %}
+    <a href="{{ url_for('courses.create') }}" class="btn btn-success">+ Nuevo curso</a>
+    {% endif %}
+</div>
+
+<div class="row">
+    {% for course in courses %}
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">{{ course.title }}</h5>
+                <p class="card-text">{{ course.description or "Sin descripción." }}</p>
+                <p class="text-muted small">
+                    Cupo: {{ enrolled_counts.get(course.id, 0) }} / {{ course.capacity }}
+                </p>
+                <a href="{{ url_for('courses.detail', course_id=course.id) }}" class="btn btn-outline-primary btn-sm">Ver detalle</a>
+                {% if current_user.role == "admin" or course.instructor_id == current_user.id %}
+                <a href="{{ url_for('courses.edit', course_id=course.id) }}" class="btn btn-outline-secondary btn-sm">Editar</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <p class="text-muted">No hay cursos activos por ahora.</p>
+    {% endfor %}
+</div>
+{% endblock %}
