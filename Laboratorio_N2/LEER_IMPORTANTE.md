@@ -80,3 +80,36 @@ Authorization: Bearer <JWT>
 ```
 
 Después de validar el JWT, consulta el perfil del usuario, los cursos del docente y los conteos de inscripción. Con esas respuestas arma `summary` y `reports` para que el BFF los renderice.
+
+## Instalar dependencias Python FastAPI para Reportes
+
+Entrar a la ruta base del microservicio y ejecutar:
+
+## Comando 1
+python3 -m venv /opt/micro_webapp/workspace/envs/micro_webapp && \
+. /opt/micro_webapp/workspace/envs/micro_webapp/bin/activate
+
+## Comando 2
+pip install -r requirements.txt
+
+## Registrar la API en Supervisord 
+cat > /etc/supervisor/conf.d/micro_app_reports.conf << "EOF"
+[program:micro_app_reports]
+command=/opt/micro_webapp/workspace/envs/micro_webapp/bin/uvicorn main:app --host 0.0.0.0 --port 8004
+directory=/var/www/html/micro_app_reports
+user=www-data
+autostart=true
+autorestart=true
+
+stdout_logfile=/var/log/supervisor/micro_app_reports.out.log
+stderr_logfile=/var/log/supervisor/micro_app_reports.err.log
+stdout_logfile_maxbytes=10MB
+stderr_logfile_maxbytes=10MB
+stdout_logfile_backups=3
+EOF
+
+
+## Recargar Supervisor
+supervisorctl reread 
+supervisorctl update 
+supervisorctl status micro_app_reports
