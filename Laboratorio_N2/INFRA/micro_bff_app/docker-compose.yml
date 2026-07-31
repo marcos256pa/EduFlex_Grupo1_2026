@@ -10,6 +10,7 @@ services:
       - USERS_URL=http://micro_app_user:8001
       - COURSES_URL=http://micro_app_courses:8002
       - ENROLLMENTS_URL=http://micro_app_enrollments:8003
+      - REPORTS_URL=http://micro_app_reports:8004
     networks:
       - ADSL
     volumes:

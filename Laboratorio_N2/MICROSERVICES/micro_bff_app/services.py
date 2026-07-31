@@ -4,6 +4,7 @@ import httpx
 USERS_URL = os.getenv("USERS_URL", "http://micro_app_user:8001")
 COURSES_URL = os.getenv("COURSES_URL", "http://micro_app_courses:8002")
 ENROLLMENTS_URL = os.getenv("ENROLLMENTS_URL", "http://micro_app_enrollments:8003")
+REPORTS_URL = os.getenv("REPORTS_URL", "http://micro_app_reports:8004")
 
 TIMEOUT = 5
 
@@ -120,3 +121,8 @@ def enrollments_for_course(token, course_id):
     if r.status_code == 200:
         return r.json()
     return []
+
+
+def reports_overview(token):
+    r = httpx.get(f"{REPORTS_URL}/api/reports/overview", headers=_auth(token), timeout=TIMEOUT)
+    return r.status_code, r.json()
