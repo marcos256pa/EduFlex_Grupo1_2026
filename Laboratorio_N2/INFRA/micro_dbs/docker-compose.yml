@@ -1,0 +1,57 @@
+services:
+  micro_db_user:
+    image: postgres:18.4
+    restart: unless-stopped
+    environment:
+      - TZ=UTC
+      - POSTGRES_DB=micro_db_user
+      - POSTGRES_USER=users_db_data
+      - POSTGRES_PASSWORD=8a2auWuBOT131yz
+    ports:
+      - "127.0.0.1:5433:5432"
+    networks:
+      - ADSL
+    volumes:
+      - users_db_data:/var/lib/postgresql
+
+  micro_db_courses:
+    image: postgres:18.4
+    restart: unless-stopped
+    environment:
+      - TZ=UTC
+      - POSTGRES_DB=micro_db_courses
+      - POSTGRES_USER=courses_db_data
+      - POSTGRES_PASSWORD=2wvTyzhft81R8f6
+    ports:
+      - "127.0.0.1:5434:5432"
+    networks:
+      - ADSL
+    volumes:
+      - courses_db_data:/var/lib/postgresql
+
+  micro_db_enrollments:
+    image: postgres:18.4
+    restart: unless-stopped
+    environment:
+      - TZ=UTC
+      - POSTGRES_DB=micro_db_enrollments
+      - POSTGRES_USER=enrollments_db_data
+      - POSTGRES_PASSWORD=h9UY9yv2K7IZ2ED
+    ports:
+      - "127.0.0.1:5435:5432"
+    networks:
+      - ADSL
+    volumes:
+      - enrollments_db_data:/var/lib/postgresql
+
+networks:
+  ADSL:
+    external: true
+
+volumes:
+  users_db_data:
+    driver: local
+  courses_db_data:
+    driver: local
+  enrollments_db_data:
+    driver: local

@@ -4,6 +4,7 @@ from routes.auth import auth_bp
 from routes.courses import courses_bp
 from routes.enrollments import enrollments_bp
 from routes.users import users_bp
+from routes.reports import reports_bp
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "dev-secret-key")
@@ -12,7 +13,7 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(courses_bp)
 app.register_blueprint(enrollments_bp)
 app.register_blueprint(users_bp)
-
+app.register_blueprint(reports_bp, url_prefix="/reports")
 
 @app.route("/")
 def index():

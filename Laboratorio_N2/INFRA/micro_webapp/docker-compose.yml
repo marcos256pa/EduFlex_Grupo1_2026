@@ -1,0 +1,48 @@
+services:
+  micro_app_user:
+    image: ubuntu/supervisord:1
+    restart: "no"
+    environment:
+      - TZ=UTC
+      - VIRTUAL_HOST=users.lms.local
+      - VIRTUAL_PORT=8001
+    networks:
+      - ADSL
+    volumes:
+      - micro_app_user_data:/var/www/html
+
+  micro_app_courses:
+    image: ubuntu/supervisord:1
+    restart: "no"
+    environment:
+      - TZ=UTC
+      - VIRTUAL_HOST=courses.lms.local
+      - VIRTUAL_PORT=8002
+    networks:
+      - ADSL
+    volumes:
+      - micro_app_courses_data:/var/www/html
+
+  micro_app_enrollments:
+    image: ubuntu/supervisord:1
+    restart: "no"
+    environment:
+      - TZ=UTC
+      - VIRTUAL_HOST=enrollments.lms.local
+      - VIRTUAL_PORT=8003
+    networks:
+      - ADSL
+    volumes:
+      - micro_app_enrollments_data:/var/www/html
+
+networks:
+  ADSL:
+    external: true
+
+volumes:
+  micro_app_user_data:
+    driver: local
+  micro_app_courses_data:
+    driver: local
+  micro_app_enrollments_data:
+    driver: local

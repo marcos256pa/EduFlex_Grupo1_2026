@@ -30,6 +30,21 @@ def instructor_required(f):
     return wrapper
 
 
+def course_owner_or_admin_required(f):
+    @wraps(f)
+    def wrapper(course_id, *args, **kwargs):
+        status, course = services.get_course(session["token"], course_id)
+        if status != 200:
+            flash("Curso no encontrado.", "danger")
+            return redirect(url_for("courses.my_courses"))
+        if session.get("role") != "admin" and course.get("instructor_id") != session.get("user_id"):
+            flash("Acceso denegado.", "danger")
+            return redirect(url_for("index"))
+        return f(course_id, *args, **kwargs)
+
+    return wrapper
+
+
 @courses_bp.route("/courses")
 @login_required
 def list_courses():
@@ -105,6 +120,7 @@ def new_course():
 @courses_bp.route("/courses/<int:course_id>/edit", methods=["GET", "POST"])
 @login_required
 @instructor_required
+@course_owner_or_admin_required
 def edit_course(course_id):
     token = session["token"]
 
@@ -132,6 +148,7 @@ def edit_course(course_id):
 @courses_bp.route("/courses/<int:course_id>/delete", methods=["POST"])
 @login_required
 @instructor_required
+@course_owner_or_admin_required
 def deactivate_course(course_id):
     status = services.deactivate_course(session["token"], course_id)
     if status == 204:

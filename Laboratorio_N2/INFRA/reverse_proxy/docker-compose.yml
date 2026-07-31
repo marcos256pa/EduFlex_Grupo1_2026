@@ -1,0 +1,35 @@
+services:
+
+  dnsmasq:
+    image: dockurr/dnsmasq:2.93
+    restart: unless-stopped
+    ports:
+      - "172.17.0.1:53:53/udp"
+      - "172.17.0.1:53:53/tcp"
+    environment:
+      - TZ=UTC
+      - DNS1=1.1.1.1
+      - DNS2=8.8.8.8
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    volumes:
+      - ./dnsmasq.d/:/etc/dnsmasq.d/
+    networks:
+      - ADSL
+
+  reverse_proxy:
+    image: jwilder/nginx-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    environment:
+      - TZ=UTC
+    networks:
+      - ADSL
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+
+networks:
+  ADSL:
+    external: true
