@@ -94,6 +94,8 @@ async def overview(
             {
                 "course_id": course.get("id"),
                 "title": course.get("title", "Sin titulo"),
+                "classroom": course.get("classroom", "Sin aula asignada"),
+                "schedule": course.get("schedule", "Horario pendiente"),
                 "capacity": capacity,
                 "enrolled": enrolled,
                 "occupancy": occupancy,

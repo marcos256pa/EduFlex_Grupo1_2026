@@ -4,7 +4,7 @@
  
 {% block content %}
  
-<h2 class="mb-4">Reportes</h2>
+<div class="report-hero mb-4"><span class="eyebrow">OVERVIEW DOCENTE</span><h2 class="mb-1">Pulso de tus cursos</h2><p class="mb-0">Capacidad, ocupación y logística académica en una sola vista.</p></div>
 <div class="row mb-4">
     <div class="col-md-4">
         <div class="card shadow-sm">
@@ -45,6 +45,7 @@
                 <thead>
                     <tr>
                         <th>Curso</th>
+                        <th>Logística</th>
                         <th>Capacidad</th>
                         <th>Matriculados</th>
                         <th>Ocupación</th>
@@ -55,6 +56,7 @@
                     {% for report in reports %}
                     <tr>
                         <td>{{ report.title }}</td>
+                        <td><div class="logistics-cell"><strong>⌂ {{ report.classroom }}</strong><small>◷ {{ report.schedule }}</small></div></td>
                         <td>{{ report.capacity }}</td>
                         <td>{{ report.enrolled }}</td>
                         <td>{{ report.occupancy }}%</td>
@@ -76,7 +78,7 @@
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="5" class="text-center text-muted">
+                        <td colspan="6" class="text-center text-muted">
                             No existen cursos para mostrar.
                         </td>
                     </tr>

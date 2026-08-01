@@ -113,3 +113,17 @@ EOF
 supervisorctl reread 
 supervisorctl update 
 supervisorctl status micro_app_reports
+
+## Tabla de cursos adaptada al campo Aula y Horario
+CREATE TABLE courses (
+    id SERIAL NOT NULL,
+    title VARCHAR(150) NOT NULL,
+    description TEXT,
+    instructor_id INTEGER NOT NULL,
+    capacity INTEGER NOT NULL DEFAULT 30,
+    classroom VARCHAR(120) NOT NULL DEFAULT '',
+    schedule VARCHAR(160) NOT NULL DEFAULT '',
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP,
+    PRIMARY KEY (id)
+);

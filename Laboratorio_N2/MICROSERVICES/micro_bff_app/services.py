@@ -50,20 +50,20 @@ def get_course(token, course_id):
     r = httpx.get(f"{COURSES_URL}/api/courses/{course_id}", headers=_auth(token), timeout=TIMEOUT)
     return r.status_code, r.json()
 
-def create_course(token, title, description, capacity):
+def create_course(token, title, description, capacity, classroom, schedule):
     r = httpx.post(
         f"{COURSES_URL}/api/courses",
         headers=_auth(token),
-        json={"title": title, "description": description, "capacity": int(capacity)},
+        json={"title": title, "description": description, "capacity": int(capacity), "classroom": classroom, "schedule": schedule},
         timeout=TIMEOUT,
     )
     return r.status_code, r.json()
 
-def update_course(token, course_id, title, description, capacity):
+def update_course(token, course_id, title, description, capacity, classroom, schedule):
     r = httpx.put(
         f"{COURSES_URL}/api/courses/{course_id}",
         headers=_auth(token),
-        json={"title": title, "description": description, "capacity": int(capacity)},
+        json={"title": title, "description": description, "capacity": int(capacity), "classroom": classroom, "schedule": schedule},
         timeout=TIMEOUT,
     )
     return r.status_code, r.json()

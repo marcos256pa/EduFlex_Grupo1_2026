@@ -11,6 +11,31 @@ ROLE_LABELS = {
 }
 
 
+def build_schedule(form):
+    """Build one readable schedule from two weekdays and a time range."""
+    days = [form.get("day_1", ""), form.get("day_2", "")]
+    start, end = form.get("start_time", ""), form.get("end_time", "")
+    if not all(days) or not start or not end:
+        return None, "Selecciona dos días y el rango de hora."
+    if days[0] == days[1]:
+        return None, "Los dos días del horario deben ser distintos."
+    if start >= end:
+        return None, "La hora de fin debe ser posterior a la hora de inicio."
+    return f"{days[0]} y {days[1]} · {start}–{end}", None
+
+
+def schedule_form_values(course=None):
+    values = {"day_1": "Lunes", "day_2": "Miércoles", "start_time": "08:00", "end_time": "10:00"}
+    schedule = (course or {}).get("schedule", "")
+    try:
+        days, hours = schedule.split(" · ")
+        values["day_1"], values["day_2"] = days.split(" y ")
+        values["start_time"], values["end_time"] = hours.split("–")
+    except ValueError:
+        pass
+    return values
+
+
 def login_required(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
@@ -103,18 +128,24 @@ def detail(course_id):
 @instructor_required
 def new_course():
     if request.method == "POST":
+        schedule, error = build_schedule(request.form)
+        if error:
+            flash(error, "danger")
+            return render_template("courses/form.html", course=None, schedule=request.form)
         status, data = services.create_course(
             session["token"],
             request.form["title"],
             request.form.get("description", ""),
             request.form["capacity"],
+            request.form.get("classroom", "").strip(),
+            schedule,
         )
         if status == 201:
             flash("Curso creado.", "success")
             return redirect(url_for("courses.list_courses"))
         flash(data.get("detail", "Error al crear curso."), "danger")
 
-    return render_template("courses/form.html", course=None)
+    return render_template("courses/form.html", course=None, schedule=schedule_form_values())
 
 
 @courses_bp.route("/courses/<int:course_id>/edit", methods=["GET", "POST"])
@@ -125,12 +156,18 @@ def edit_course(course_id):
     token = session["token"]
 
     if request.method == "POST":
+        schedule, error = build_schedule(request.form)
+        if error:
+            flash(error, "danger")
+            return render_template("courses/form.html", course={"title": request.form.get("title", ""), "description": request.form.get("description", ""), "capacity": request.form.get("capacity", 30), "classroom": request.form.get("classroom", "")}, schedule=request.form)
         status, data = services.update_course(
             token,
             course_id,
             request.form["title"],
             request.form.get("description", ""),
             request.form["capacity"],
+            request.form.get("classroom", "").strip(),
+            schedule,
         )
         if status == 200:
             flash("Curso actualizado.", "success")
@@ -142,7 +179,7 @@ def edit_course(course_id):
         flash("Curso no encontrado.", "danger")
         return redirect(url_for("courses.my_courses"))
 
-    return render_template("courses/form.html", course=course)
+    return render_template("courses/form.html", course=course, schedule=schedule_form_values(course))
 
 
 @courses_bp.route("/courses/<int:course_id>/delete", methods=["POST"])
