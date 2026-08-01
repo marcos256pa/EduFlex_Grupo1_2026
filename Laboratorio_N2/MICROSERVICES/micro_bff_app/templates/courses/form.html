@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}{% if course %}Editar curso{% else %}Nuevo curso{% endif %}{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="course-form-hero mb-4">
+      <span class="eyebrow">PLANIFICACIÓN ACADÉMICA</span>
+      <h2 class="mb-1">{% if course %}Editar curso{% else %}Nuevo curso{% endif %}</h2>
+      <p class="mb-0">Define dónde y cuándo sucede la experiencia de aprendizaje.</p>
+    </div>
+    <form method="POST" class="card course-form-card">
+      <div class="card-body p-4">
+        <div class="mb-3">
+          <label class="form-label">Título</label>
+          <input type="text" name="title" class="form-control" required autofocus value="{{ course.title if course else request.form.get('title', '') }}">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Descripción</label>
+          <textarea name="description" class="form-control" rows="4">{{ course.description if course else request.form.get('description', '') }}</textarea>
+        </div>
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <label class="form-label">Cupo</label>
+            <input type="number" name="capacity" class="form-control" min="1" required value="{{ course.capacity if course else request.form.get('capacity', 30) }}">
+          </div>
+          <div class="col-md-8">
+            <label class="form-label">Aula</label>
+            <input type="text" name="classroom" class="form-control" maxlength="120" required placeholder="Ej. Aula 204 · Edificio Norte" value="{{ course.classroom if course else request.form.get('classroom', '') }}">
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="form-label">Horario semanal</label>
+          <div class="schedule-picker">
+            <select name="day_1" class="form-select" required>{% for day in ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'] %}<option {% if schedule.get('day_1') == day %}selected{% endif %}>{{ day }}</option>{% endfor %}</select>
+            <span>y</span>
+            <select name="day_2" class="form-select" required>{% for day in ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'] %}<option {% if schedule.get('day_2') == day %}selected{% endif %}>{{ day }}</option>{% endfor %}</select>
+          </div>
+          <div class="schedule-picker mt-2">
+            <input type="time" name="start_time" class="form-control" required value="{{ schedule.get('start_time', '08:00') }}">
+            <span>a</span>
+            <input type="time" name="end_time" class="form-control" required value="{{ schedule.get('end_time', '10:00') }}">
+          </div>
+          <div class="form-text">Elige dos días y un rango de horas para el curso.</div>
+        </div>
+        <button type="submit" class="btn btn-primary">{% if course %}Guardar cambios{% else %}Crear curso{% endif %}</button>
+        <a href="{{ url_for('courses.my_courses') }}" class="btn btn-link">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
