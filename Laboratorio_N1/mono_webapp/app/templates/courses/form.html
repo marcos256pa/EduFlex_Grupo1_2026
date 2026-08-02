@@ -18,6 +18,18 @@
                 {{ form.capacity.label(class="form-label") }}
                 {{ form.capacity(class="form-control") }}
             </div>
+            <div class="mb-3">
+                {{ form.classroom.label(class="form-label") }}
+                {{ form.classroom(class="form-control", placeholder="Ej. Aula 204 · Edificio Norte") }}
+                {% for error in form.classroom.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+            </div>
+            <div class="mb-4">
+                <label class="form-label">Horario semanal</label>
+                <div class="row g-2 align-items-center mb-2"><div class="col-md">{{ form.day_1(class="form-select") }}</div><div class="col-md-auto text-center">y</div><div class="col-md">{{ form.day_2(class="form-select") }}</div></div>
+                <div class="row g-2 align-items-center"><div class="col-md">{{ form.start_time(class="form-control", type="time") }}</div><div class="col-md-auto text-center">a</div><div class="col-md">{{ form.end_time(class="form-control", type="time") }}</div></div>
+                <div class="form-text">Elige dos días distintos y un rango de horas para el curso.</div>
+                {% for field in (form.day_1, form.day_2, form.start_time, form.end_time) %}{% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}{% endfor %}
+            </div>
             {{ form.submit(class="btn btn-primary") }}
         </form>
     </div>
