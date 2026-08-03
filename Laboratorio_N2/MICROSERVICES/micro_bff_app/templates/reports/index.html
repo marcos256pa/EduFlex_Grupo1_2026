@@ -56,7 +56,7 @@
                     {% for report in reports %}
                     <tr>
                         <td>{{ report.title }}</td>
-                        <td><div class="logistics-cell"><strong>⌂ {{ report.classroom }}</strong><small>◷ {{ report.schedule }}</small></div></td>
+                        <td><div class="logistics-cell"><strong>⌂ {{ report.classroom }}</strong>{% for session in report.schedule.split(" | ") %}<small>◷ {{ session }}</small>{% endfor %}</div></td>
                         <td>{{ report.capacity }}</td>
                         <td>{{ report.enrolled }}</td>
                         <td>{{ report.occupancy }}%</td>

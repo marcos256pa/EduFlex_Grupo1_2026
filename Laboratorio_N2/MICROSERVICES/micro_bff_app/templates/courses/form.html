@@ -30,17 +30,20 @@
         </div>
         <div class="mb-4">
           <label class="form-label">Horario semanal</label>
-          <div class="schedule-picker">
-            <select name="day_1" class="form-select" required>{% for day in ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'] %}<option {% if schedule.get('day_1') == day %}selected{% endif %}>{{ day }}</option>{% endfor %}</select>
-            <span>y</span>
-            <select name="day_2" class="form-select" required>{% for day in ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'] %}<option {% if schedule.get('day_2') == day %}selected{% endif %}>{{ day }}</option>{% endfor %}</select>
+          <div class="row g-3">
+            {% for number, label in [('1', 'Primer día'), ('2', 'Segundo día')] %}
+            <div class="col-md-6">
+              <label class="form-label small">{{ label }}</label>
+              <select name="day_{{ number }}" class="form-select mb-2" required>{% for day in ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'] %}<option {% if schedule.get('day_' ~ number) == day %}selected{% endif %}>{{ day }}</option>{% endfor %}</select>
+              <div class="schedule-picker">
+                <input type="time" name="start_time_{{ number }}" class="form-control" min="08:00" max="21:00" required value="{{ schedule.get('start_time_' ~ number, '08:00') }}">
+                <span>a</span>
+                <input type="time" name="end_time_{{ number }}" class="form-control" min="08:00" max="21:00" required value="{{ schedule.get('end_time_' ~ number, '10:00') }}">
+              </div>
+            </div>
+            {% endfor %}
           </div>
-          <div class="schedule-picker mt-2">
-            <input type="time" name="start_time" class="form-control" required value="{{ schedule.get('start_time', '08:00') }}">
-            <span>a</span>
-            <input type="time" name="end_time" class="form-control" required value="{{ schedule.get('end_time', '10:00') }}">
-          </div>
-          <div class="form-text">Elige dos días y un rango de horas para el curso.</div>
+          <div class="form-text">Selecciona dos días de lunes a viernes, entre las 08:00 y las 21:00.</div>
         </div>
         <button type="submit" class="btn btn-primary">{% if course %}Guardar cambios{% else %}Crear curso{% endif %}</button>
         <a href="{{ url_for('courses.my_courses') }}" class="btn btn-link">Cancelar</a>

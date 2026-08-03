@@ -12,27 +12,39 @@ ROLE_LABELS = {
 
 
 def build_schedule(form):
-    """Build one readable schedule from two weekdays and a time range."""
-    days = [form.get("day_1", ""), form.get("day_2", "")]
-    start, end = form.get("start_time", ""), form.get("end_time", "")
-    if not all(days) or not start or not end:
-        return None, "Selecciona dos días y el rango de hora."
-    if days[0] == days[1]:
+    """Build a readable schedule with an independent range for each weekday."""
+    day_1, day_2 = form.get("day_1", ""), form.get("day_2", "")
+    start_1, end_1 = form.get("start_time_1", ""), form.get("end_time_1", "")
+    start_2, end_2 = form.get("start_time_2", ""), form.get("end_time_2", "")
+    if not all((day_1, day_2, start_1, end_1, start_2, end_2)):
+        return None, "Selecciona dos días y sus rangos de hora."
+    if day_1 not in ("Lunes", "Martes", "Miércoles", "Jueves", "Viernes") or day_2 not in ("Lunes", "Martes", "Miércoles", "Jueves", "Viernes"):
+        return None, "Los días del horario deben estar entre lunes y viernes."
+    if day_1 == day_2:
         return None, "Los dos días del horario deben ser distintos."
-    if start >= end:
-        return None, "La hora de fin debe ser posterior a la hora de inicio."
-    return f"{days[0]} y {days[1]} · {start}–{end}", None
+    for start, end in ((start_1, end_1), (start_2, end_2)):
+        if not ("08:00" <= start < end <= "21:00"):
+            return None, "Cada horario debe estar entre las 08:00 y las 21:00, con fin posterior al inicio."
+    return f"{day_1} · {start_1}–{end_1} | {day_2} · {start_2}–{end_2}", None
 
 
 def schedule_form_values(course=None):
-    values = {"day_1": "Lunes", "day_2": "Miércoles", "start_time": "08:00", "end_time": "10:00"}
+    values = {"day_1": "Lunes", "start_time_1": "08:00", "end_time_1": "10:00", "day_2": "Miércoles", "start_time_2": "08:00", "end_time_2": "10:00"}
     schedule = (course or {}).get("schedule", "")
     try:
-        days, hours = schedule.split(" · ")
-        values["day_1"], values["day_2"] = days.split(" y ")
-        values["start_time"], values["end_time"] = hours.split("–")
+        first, second = schedule.split(" | ")
+        values["day_1"], first_hours = first.split(" · ")
+        values["day_2"], second_hours = second.split(" · ")
+        values["start_time_1"], values["end_time_1"] = first_hours.split("–")
+        values["start_time_2"], values["end_time_2"] = second_hours.split("–")
     except ValueError:
-        pass
+        try:
+            days, hours = schedule.split(" · ")
+            values["day_1"], values["day_2"] = days.split(" y ")
+            values["start_time_1"], values["end_time_1"] = hours.split("–")
+            values["start_time_2"], values["end_time_2"] = values["start_time_1"], values["end_time_1"]
+        except ValueError:
+            pass
     return values
 
 

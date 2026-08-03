@@ -1,37 +1,59 @@
 {% extends "base.html" %}
-{% block title %}{% if mode == "create" %}Nuevo curso{% else %}Editar curso{% endif %}{% endblock %}
+{% block title %}{% if course %}Editar curso{% else %}Nuevo curso{% endif %}{% endblock %}
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-6">
-        <h2 class="mb-4">{% if mode == "create" %}Nuevo curso{% else %}Editar curso{% endif %}</h2>
-        <form method="POST">
-            {{ form.hidden_tag() }}
-            <div class="mb-3">
-                {{ form.title.label(class="form-label") }}
-                {{ form.title(class="form-control") }}
-            </div>
-            <div class="mb-3">
-                {{ form.description.label(class="form-label") }}
-                {{ form.description(class="form-control", rows=4) }}
-            </div>
-            <div class="mb-3">
-                {{ form.capacity.label(class="form-label") }}
-                {{ form.capacity(class="form-control") }}
-            </div>
-            <div class="mb-3">
-                {{ form.classroom.label(class="form-label") }}
-                {{ form.classroom(class="form-control", placeholder="Ej. Aula 204 · Edificio Norte") }}
-                {% for error in form.classroom.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
-            </div>
-            <div class="mb-4">
-                <label class="form-label">Horario semanal</label>
-                <div class="row g-2 align-items-center mb-2"><div class="col-md">{{ form.day_1(class="form-select") }}</div><div class="col-md-auto text-center">y</div><div class="col-md">{{ form.day_2(class="form-select") }}</div></div>
-                <div class="row g-2 align-items-center"><div class="col-md">{{ form.start_time(class="form-control", type="time") }}</div><div class="col-md-auto text-center">a</div><div class="col-md">{{ form.end_time(class="form-control", type="time") }}</div></div>
-                <div class="form-text">Elige dos días distintos y un rango de horas para el curso.</div>
-                {% for field in (form.day_1, form.day_2, form.start_time, form.end_time) %}{% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}{% endfor %}
-            </div>
-            {{ form.submit(class="btn btn-primary") }}
-        </form>
+  <div class="col-lg-8">
+    <div class="course-form-hero mb-4">
+      <span class="eyebrow">PLANIFICACIÓN ACADÉMICA</span>
+      <h2 class="mb-1">{% if course %}Editar curso{% else %}Nuevo curso{% endif %}</h2>
+      <p class="mb-0">Define dónde y cuándo sucede la experiencia de aprendizaje.</p>
     </div>
+    <form method="POST" class="card course-form-card">
+      <div class="card-body p-4">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+          <label for="{{ form.title.id }}" class="form-label">Título</label>
+          {{ form.title(class="form-control", autofocus=true) }}
+          {% for error in form.title.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+        </div>
+        <div class="mb-3">
+          <label for="{{ form.description.id }}" class="form-label">Descripción</label>
+          {{ form.description(class="form-control", rows=4) }}
+          {% for error in form.description.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+        </div>
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <label for="{{ form.capacity.id }}" class="form-label">Cupo</label>
+            {{ form.capacity(class="form-control", min=1) }}
+            {% for error in form.capacity.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+          </div>
+          <div class="col-md-8">
+            <label for="{{ form.classroom.id }}" class="form-label">Aula</label>
+            {{ form.classroom(class="form-control", placeholder="Ej. Aula 204 · Edificio Norte") }}
+            {% for error in form.classroom.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="form-label">Horario semanal</label>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="{{ form.day_1.id }}" class="form-label small">Primer día</label>
+              {{ form.day_1(class="form-select mb-2") }}
+              <div class="schedule-picker">{{ form.start_time_1(class="form-control", type="time", min="08:00", max="21:00") }}<span>a</span>{{ form.end_time_1(class="form-control", type="time", min="08:00", max="21:00") }}</div>
+            </div>
+            <div class="col-md-6">
+              <label for="{{ form.day_2.id }}" class="form-label small">Segundo día</label>
+              {{ form.day_2(class="form-select mb-2") }}
+              <div class="schedule-picker">{{ form.start_time_2(class="form-control", type="time", min="08:00", max="21:00") }}<span>a</span>{{ form.end_time_2(class="form-control", type="time", min="08:00", max="21:00") }}</div>
+            </div>
+          </div>
+          <div class="form-text">Selecciona dos días de lunes a viernes, entre las 08:00 y las 21:00.</div>
+          {% for field in (form.day_1, form.start_time_1, form.end_time_1, form.day_2, form.start_time_2, form.end_time_2) %}{% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}{% endfor %}
+        </div>
+        {{ form.submit(class="btn btn-primary", value="Guardar cambios" if course else "Crear curso") }}
+        <a href="{{ url_for("courses.my_courses") }}" class="btn btn-link">Cancelar</a>
+      </div>
+    </form>
+  </div>
 </div>
 {% endblock %}
