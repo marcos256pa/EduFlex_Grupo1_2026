@@ -8,6 +8,8 @@
         <h2 class="card-title">{{ course.title }}</h2>
         <p class="card-text">{{ course.description or "Sin descripción." }}</p>
         <p class="text-muted">Cupo: {{ enrolled_count }} / {{ course.capacity }}</p>
+        <p class="text-muted mb-0">Aula: {{ course.classroom or "Sin asignar" }}</p>
+        <p class="text-muted">Horario semanal: {{ course.schedule or "Sin asignar" }}</p>
 
         {% if session.role == "student" %}
         <form method="POST" action="{{ url_for('enrollments.enroll', course_id=course.id) }}">

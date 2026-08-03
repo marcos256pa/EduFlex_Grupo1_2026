@@ -35,7 +35,7 @@ def get_course_report(instructor_id: int):
  
         percentage = round((enrolled / course.capacity) * 100) if course.capacity else 0
  
-        if percentage == 100:
+        if percentage >= 100:
             status = "Completo"
         elif percentage >= 70:
             status = "Casi lleno"
@@ -44,7 +44,10 @@ def get_course_report(instructor_id: int):
  
         report.append(
             {
+                "course_id": course.id,
                 "title": course.title,
+                "classroom": course.classroom,
+                "schedule": course.schedule,
                 "capacity": course.capacity,
                 "enrolled": enrolled,
                 "occupancy": percentage,
