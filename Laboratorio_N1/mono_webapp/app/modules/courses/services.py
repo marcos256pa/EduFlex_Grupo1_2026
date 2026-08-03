@@ -18,12 +18,16 @@ def get_course(course_id: int) -> Course | None:
     return db.session.get(Course, course_id)
 
 
-def create_course(title: str, description: str, capacity: int, instructor_id: int) -> Course:
+def create_course(
+    title: str, description: str, capacity: int, instructor_id: int, classroom: str, schedule: str
+) -> Course:
     course = Course(
         title=title,
         description=description,
         capacity=capacity,
         instructor_id=instructor_id,
+        classroom=classroom.strip(),
+        schedule=schedule.strip(),
     )
     db.session.add(course)
     db.session.commit()
@@ -34,7 +38,9 @@ class CapacityBelowEnrolledError(Exception):
     pass
 
 
-def update_course(course: Course, title: str, description: str, capacity: int) -> Course:
+def update_course(
+    course: Course, title: str, description: str, capacity: int, classroom: str, schedule: str
+) -> Course:
     enrolled_count = count_enrolled_for(course.id)
     if capacity < enrolled_count:
         raise CapacityBelowEnrolledError(
@@ -44,6 +50,8 @@ def update_course(course: Course, title: str, description: str, capacity: int) -
     course.title = title
     course.description = description
     course.capacity = capacity
+    course.classroom = classroom.strip()
+    course.schedule = schedule.strip()
     db.session.commit()
     return course
 
