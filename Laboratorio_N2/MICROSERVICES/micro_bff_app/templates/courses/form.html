@@ -43,7 +43,7 @@
             </div>
             {% endfor %}
           </div>
-          <div class="form-text">Selecciona dos días de lunes a viernes, entre las 08:00 y las 21:00.</div>
+          <div class="form-text">Selecciona dos días de lunes a viernes, entre las 08:00 AM y las 9:00 PM.</div>
         </div>
         <button type="submit" class="btn btn-primary">{% if course %}Guardar cambios{% else %}Crear curso{% endif %}</button>
         <a href="{{ url_for('courses.my_courses') }}" class="btn btn-link">Cancelar</a>

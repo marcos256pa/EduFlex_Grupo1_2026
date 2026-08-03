@@ -47,11 +47,11 @@
               <div class="schedule-picker">{{ form.start_time_2(class="form-control", type="time", min="08:00", max="21:00") }}<span>a</span>{{ form.end_time_2(class="form-control", type="time", min="08:00", max="21:00") }}</div>
             </div>
           </div>
-          <div class="form-text">Selecciona dos días de lunes a viernes, entre las 08:00 y las 21:00.</div>
+          <div class="form-text">Selecciona dos días de lunes a viernes, entre las 08:00 AM y las 9:00 PM.</div>
           {% for field in (form.day_1, form.start_time_1, form.end_time_1, form.day_2, form.start_time_2, form.end_time_2) %}{% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}{% endfor %}
         </div>
         {{ form.submit(class="btn btn-primary", value="Guardar cambios" if course else "Crear curso") }}
-        <a href="{{ url_for("courses.my_courses") }}" class="btn btn-link">Cancelar</a>
+        <a href="{{ url_for('courses.my_courses') }}" class="btn btn-link">Cancelar</a>
       </div>
     </form>
   </div>
