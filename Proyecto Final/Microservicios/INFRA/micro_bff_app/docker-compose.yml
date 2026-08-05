@@ -1,0 +1,40 @@
+services:
+  micro_bff_app:
+    image: ubuntu/supervisord:1
+    restart: "no"
+    environment:
+      - TZ=UTC
+      - VIRTUAL_HOST=micro.lms.local
+      - VIRTUAL_PORT=8000
+      - SECRET_KEY=dev-secret-key
+      - USERS_URL=http://micro_app_user:8001
+      - COURSES_URL=http://micro_app_courses:8002
+      - ENROLLMENTS_URL=http://micro_app_enrollments:8003
+      - REPORTS_URL=http://micro_app_reports:8004
+    networks:
+      - ADSL
+    volumes:
+      - micro_bff_app_data:/var/www/html
+  
+  ngrok:
+    image: ngrok/ngrok:latest
+    restart: "no"
+    command: 
+      - "http"
+      - "micro_bff_app:8000"
+    environment:
+      - NGROK_AUTHTOKEN=<colocar_su_token_aqui>
+    ports:
+      - "4040:4040"
+    networks:
+      - ADSL
+    depends_on:
+      - micro_bff_app
+
+networks:
+  ADSL:
+    external: true
+
+volumes:
+  micro_bff_app_data:
+    driver: local
